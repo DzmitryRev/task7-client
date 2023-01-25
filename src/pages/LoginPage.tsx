@@ -1,9 +1,34 @@
-import { TextField } from "@mui/material";
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import * as yup from "yup";
+import { useNavigate, useParams } from "react-router-dom";
+import { useFormik } from "formik";
+import { Box, Button, TextField } from "@mui/material";
 
-export default function LoginPage() {
+const loginInitialValue = {
+  name: "",
+};
+export const loginValidationSchema = yup.object({
+  name: yup.string().required("Name is required"),
+});
+
+interface ILoginPageProps {
+  name: string;
+  setName: (name: string) => void;
+}
+
+export default function LoginPage({ name, setName }: ILoginPageProps) {
   const { gameId } = useParams();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (name) {
+      if (gameId) {
+        navigate(`/game/${gameId}`);
+      } else {
+        navigate("/");
+      }
+    }
+  }, [name]);
 
   const formik = useFormik({
     initialValues: loginInitialValue,
@@ -11,13 +36,11 @@ export default function LoginPage() {
     onSubmit: (values) => {
       const { name } = values;
       setName(name);
-      setIsAuth(true);
     },
   });
 
   return (
     <div>
-      LoginPage // input с именем // submit кнопка ( после входа
       <form onSubmit={formik.handleSubmit}>
         <TextField
           sx={{ mb: 2 }}
@@ -34,7 +57,6 @@ export default function LoginPage() {
           </Button>
         </Box>
       </form>
-      {gameId ? "редирект на игру" : "создание новой игры"} )
     </div>
   );
 }

@@ -9,6 +9,7 @@ const socket = io("http://localhost:3000", { autoConnect: false });
 
 function App() {
   const [name, setName] = useState("");
+  console.log(name);
   //   useEffect(() => {
   //     socket.on("connection", (soc) => {
   //       socket.emit("join_to_room", "1020");
@@ -31,9 +32,9 @@ function App() {
         connect
       </button> */}
       <Routes>
-        <Route path="/" element={<CreateGamePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="game/:gameId" element={<GamePage />} />
+        <Route path="/" element={<CreateGamePage name={name} />} />
+        <Route path="/login/:gameId?" element={<LoginPage name={name} setName={setName} />} />
+        <Route path="game/:gameId" element={<GamePage name={name} />} />
       </Routes>
     </div>
   );
