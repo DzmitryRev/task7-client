@@ -11,6 +11,8 @@ export default function GamePage({ name }: { name: string }) {
     }
   }, []);
 
+  
+
   return (
     <div>
       // Если не залогинен то идем на логин пэйдж -- оттуда редирект назад на игру // Вытгиваем
