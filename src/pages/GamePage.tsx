@@ -139,8 +139,6 @@ export default function GamePage({ name, setNotification }: IGameProps) {
           moveAction={(cellIndex: { pos: number; row: number }) => {
             if (
               !gameState?.result &&
-              //   gameState?.playerOne &&
-              //   gameState?.playerTwo &&
               gameState?.move === player?.marker
             ) {
               socket.emit("game action", {
