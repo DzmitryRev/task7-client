@@ -1,15 +1,7 @@
-import React, { useEffect } from "react";
-import * as yup from "yup";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFormik } from "formik";
 import { Box, Button, TextField } from "@mui/material";
-
-const loginInitialValue = {
-  name: "",
-};
-export const loginValidationSchema = yup.object({
-  name: yup.string().required("Name is required"),
-});
+import { socket } from "../App";
 
 interface ILoginPageProps {
   name: string;
@@ -30,33 +22,50 @@ export default function LoginPage({ name, setName }: ILoginPageProps) {
     }
   }, [name]);
 
-  const formik = useFormik({
-    initialValues: loginInitialValue,
-    validationSchema: loginValidationSchema,
-    onSubmit: (values) => {
-      const { name } = values;
-      setName(name);
-    },
+  const [error, setError] = useState("");
+  const [inputValue, setInputValue] = useState("");
+
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputValue.length) {
+      setError("Имя обазательно");
+      return;
+    }
+    socket.auth = { username: inputValue };
+    socket.connect();
+  };
+
+  socket.on("login", () => {
+    setName(inputValue);
+  });
+
+  socket.on("connect_error", (err) => {
+    setError(err.message);
   });
 
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
+    <Box
+      sx={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
+      <form onSubmit={submit}>
         <TextField
           sx={{ mb: 2 }}
           name="name"
-          label={formik.touched.name ? formik.touched.name && formik.errors.name : "Name"}
-          value={formik.values.name}
-          error={formik.touched.name && !!formik.errors.name}
-          onChange={formik.handleChange}
+          label={error || "Имя"}
+          value={inputValue}
+          error={!!error}
+          onChange={(e) => {
+            setError("");
+            setInputValue(e.target.value);
+          }}
           autoComplete="off"
         />
         <Box>
-          <Button variant="outlined" type="submit">
-            Login
+          <Button variant="contained" type="submit">
+            Войти
           </Button>
         </Box>
       </form>
-    </div>
+    </Box>
   );
 }

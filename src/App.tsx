@@ -1,42 +1,45 @@
-import { useEffect, useState } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Alert, Box, Typography } from "@mui/material";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import io from "socket.io-client";
+import useNotification from "./hooks/useNotification";
 import CreateGamePage from "./pages/CreateGamePage";
 import GamePage from "./pages/GamePage";
 import LoginPage from "./pages/LoginPage";
 
-const socket = io("http://localhost:3000", { autoConnect: false });
+export const socket = io("http://localhost:3000", {
+  autoConnect: false,
+  transports: ["websocket"],
+});
 
 function App() {
   const [name, setName] = useState("");
-  console.log(name);
-  //   useEffect(() => {
-  //     socket.on("connection", (soc) => {
-  //       socket.emit("join_to_room", "1020");
-  //     });
-  //   }, []);
+  const { notification, setNotification } = useNotification();
+
   return (
-    <div className="App">
-      {/* <button
-        onClick={() => {
-          socket.disconnect();
-        }}
-      >
-        disconnect
-      </button>
-      <button
-        onClick={() => {
-          socket.connect();
-        }}
-      >
-        connect
-      </button> */}
+    <Box sx={{ maxWidth: "998px", m: "0 auto", px: 3 }}>
+      <Box sx={{ py: 2, display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h5" gutterBottom>
+          Tic Tac Toe
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          {name}
+        </Typography>
+      </Box>
       <Routes>
         <Route path="/" element={<CreateGamePage name={name} />} />
         <Route path="/login/:gameId?" element={<LoginPage name={name} setName={setName} />} />
-        <Route path="game/:gameId" element={<GamePage name={name} />} />
+        <Route
+          path="game/:gameId"
+          element={<GamePage name={name} setNotification={setNotification} />}
+        />
       </Routes>
-    </div>
+      {notification && (
+        <Alert sx={{ position: "absolute", bottom: "30px", right: "30px" }} severity="error">
+          {notification}
+        </Alert>
+      )}
+    </Box>
   );
 }
 
