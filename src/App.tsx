@@ -7,7 +7,7 @@ import CreateGamePage from "./pages/CreateGamePage";
 import GamePage from "./pages/GamePage";
 import LoginPage from "./pages/LoginPage";
 
-export const socket = io("https://task7-server.onrender.com", {
+export const socket = io("https://task7-server.dzmitryrev.repl.co", {
   autoConnect: false,
   transports: ["websocket"],
 });
