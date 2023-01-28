@@ -72,7 +72,9 @@ export default function GamePage({ name, setNotification }: IGameProps) {
           }}
         >
           <Typography variant="subtitle1">Поделитесь этой ссылкой:</Typography>
-          <Typography variant="subtitle2">localhost:5173/game/{gameId}</Typography>
+          <Typography variant="subtitle2">
+            https://task7-client-iota.vercel.app/game/{gameId}
+          </Typography>
         </Box>
       )}
       <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
@@ -137,10 +139,7 @@ export default function GamePage({ name, setNotification }: IGameProps) {
             ]
           }
           moveAction={(cellIndex: { pos: number; row: number }) => {
-            if (
-              !gameState?.result &&
-              gameState?.move === player?.marker
-            ) {
+            if (!gameState?.result && gameState?.move === player?.marker) {
               socket.emit("game action", {
                 gameId,
                 move: { cellIndex, marker: player?.marker, gameState, name },
